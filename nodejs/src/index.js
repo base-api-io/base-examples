@@ -1,30 +1,31 @@
 const bodyParser = require('body-parser');
 const session = require('cookie-session');
 const express = require('express');
-const multer  = require('multer')
-const fs = require('fs')
+const multer = require('multer');
+const fs = require('fs');
+
+const { Client, InvalidRequest, Unauthorized } = require('base-api-io');
 
 const storage = multer.diskStorage({
   destination: 'uploads/',
-  filename: function (req, file, cb) {
-    cb(null, file.originalname)
-  }
-})
+  filename(req, file, callback) {
+    callback(null, file.originalname);
+  },
+});
 
 const upload = multer({
-  storage: storage,
+  storage,
   limits: {
     fieldNameSize: 100,
     fieldSize: 1000000,
-    fileSize: 1000000
-  }
+    fileSize: 1000000,
+  },
 });
 
+// APP SETUP
+// =============================================================================
+
 const app = express();
-
-const { Client } = require('base-api-io');
-
-const client = new Client.Client('4dcfbd28-ae85-4370-9529-45cced846cba');
 
 app.set('view engine', 'pug');
 
@@ -45,14 +46,18 @@ app.use((req, res, next) => {
 });
 
 const getErrorMessage = (error) => {
-  if (error instanceof Client.InvalidRequest) {
+  if (error instanceof InvalidRequest) {
     return `Invalid request: ${error.data.error}`;
-  } if (error instanceof Client.Unauthorized) {
+  } if (error instanceof Unauthorized) {
     return 'Unauthorized!';
-  } else {
-    return 'Something went wrong!';
   }
+  return 'Something went wrong!';
 };
+
+// CREATE A CLIENT
+// =============================================================================
+
+const client = new Client('4dcfbd28-ae85-4370-9529-45cced846cba');
 
 // REGISTER
 // =============================================================================
@@ -141,13 +146,13 @@ app.get('/users/:id', async (req, res) => {
 
 app.post('/users/:id/delete', async (req, res) => {
   try {
-    const user = await client.users.delete(req.params.id);
+    await client.users.delete(req.params.id);
 
-    if (req.params.id == req.session.userId) {
-      req.session.userId = null
+    if (req.params.id === req.session.userId) {
+      req.session.userId = null;
     }
 
-    res.redirect('/')
+    res.redirect('/');
   } catch (error) {
     res.render('not-found');
   }
@@ -194,10 +199,10 @@ app.post('/upload-file', upload.single('file'), async (req, res) => {
   try {
     const file = await client.files.create({
       content_type: req.file.mimetype,
-      file: req.file.path
+      file: req.file.path,
     });
 
-    fs.unlink(req.file.path)
+    fs.unlink(req.file.path);
 
     res.redirect(`/files/${file.id}`);
   } catch (error) {
@@ -224,7 +229,7 @@ app.post('/files/:id/delete', async (req, res) => {
   try {
     await client.files.delete(req.params.id);
 
-    res.redirect('/')
+    res.redirect('/');
   } catch (error) {
     res.render('not-found');
   }
@@ -241,10 +246,10 @@ app.post('/upload-image', upload.single('image'), async (req, res) => {
   try {
     const image = await client.images.create({
       content_type: req.file.mimetype,
-      file: req.file.path
+      file: req.file.path,
     });
 
-    fs.unlink(req.file.path)
+    fs.unlink(req.file.path);
 
     res.redirect(`/images/${image.id}`);
   } catch (error) {
@@ -271,7 +276,7 @@ app.post('/images/:id/delete', async (req, res) => {
   try {
     await client.images.delete(req.params.id);
 
-    res.redirect('/')
+    res.redirect('/');
   } catch (error) {
     res.render('not-found');
   }
