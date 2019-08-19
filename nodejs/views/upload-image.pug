@@ -1,0 +1,18 @@
+extends layout.pug
+
+block content
+  .container.mt-5
+    h1 Upload Image
+
+    form(method="POST" action="/upload-image" enctype="multipart/form-data")
+      if error
+        .alert.alert-danger
+          = error
+
+      .form-group
+        label(for='image') Image
+        input#image.form-control(
+          type='file'
+          name="image")
+
+      button.btn.btn-primary(type='submit') Submit

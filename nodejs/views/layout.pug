@@ -1,0 +1,32 @@
+html
+  head
+    title Base API Example
+    block head
+      link(rel='stylesheet'
+      href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'
+      integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T'
+      crossorigin='anonymous')
+  body
+    nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+      .container
+        a.navbar-brand(href='/') Base API Example
+
+        div.navbar-collapse
+          ul.navbar-nav.mr-auto
+            li.nav-item
+              a.nav-link(href='/send-email') Send Email
+            li.nav-item
+              a.nav-link(href='/upload-file') Upload File
+            li.nav-item
+              a.nav-link(href='/upload-image') Upload Image
+
+          ul.navbar-nav
+            if loggedIn
+                a.nav-link(href='/logout') Logout
+            else
+              li.nav-item
+                a.nav-link(href='/login') Login
+              li.nav-item
+                a.nav-link(href='/register') Register
+
+    block content
