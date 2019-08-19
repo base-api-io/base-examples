@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <title>
+      Base API Example
+    </title>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"/>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          Base API Example
+        </a>
+
+        <div class="navbar-collapse">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/send-email">
+                Send Email
+              </a>
+            <li class="nav-item">
+              <a class="nav-link" href="/upload-file">
+                Upload File
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/upload-image">
+                Upload Image
+              </a>
+            </li>
+          </ul>
+
+          <ul class="navbar-nav">
+            <% if logged_in?(env) %>
+              <li class="nav-item">
+                <a class="nav-link" href="/logout">
+                  Logout
+                </a>
+              </li>
+            <% else %>
+              <li class="nav-item">
+                <a class="nav-link" href="/login" >
+                  Login
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/register" >
+                  Register
+                </a>
+              </li>
+            <% end %>
+          </ul>
+      </div>
+    </nav>
+
+    <%= content %>
+  </body>
+</html>

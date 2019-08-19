@@ -1,0 +1,51 @@
+<div class="container mt-5">
+  <h1 class="mb-4">
+    User Details
+  </h1>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>ID</td>
+        <td>
+          <%= user.id %>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Email</td>
+        <td>
+          <%= user.email %>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Created At</td>
+        <td>
+          <%= user.created_at %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <form method="POST" action="/users/<%= user.id %>/delete">
+    <button class="btn btn-danger">
+      Delete User
+    </button>
+  </form>
+
+  <h4 class="mt-5">Response</h4>
+
+  <div class="card bg-light">
+    <div class="card-body">
+      <pre><code><%= user.to_pretty_json %></code></pre>
+    </div>
+  </div>
+</div>
