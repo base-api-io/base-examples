@@ -1,19 +1,21 @@
+# frozen_string_literal: true
+
 require 'sinatra'
 require 'base'
 
 client =
-  Base::Client.new(access_token: "4dcfbd28-ae85-4370-9529-45cced846cba")
+  Base::Client.new(access_token: '4dcfbd28-ae85-4370-9529-45cced846cba')
 
 def get_error_message(error)
   case error
   when Base::Unauthorized
-    "Unauthorized!"
+    'Unauthorized!'
   when Base::InvalidRequest
-    error.data["error"]
+    error.data['error']
   when Base::UnkownError
-    "Something went wrong!"
+    'Something went wrong!'
   else
-    "Something went wrong!"
+    'Something went wrong!'
   end
 end
 
@@ -27,187 +29,190 @@ end
 # LOGIN
 # ==============================================================================
 
-get "/login" do
+get '/login' do
   if session[:user]
-    redirect "/"
+    redirect '/'
   else
     erb :login, locals: { error: nil }
   end
 end
 
-post "/login" do
+post '/login' do
   if session[:user]
-    redirect "/"
+    redirect '/'
   else
     user =
       client.sessions.authenticate(
-        password: params["password"],
-        email: params["email"])
+        password: params['password'],
+        email: params['email']
+      )
 
     session[:user] = user.id
 
     redirect "/users/#{user.id}"
   end
-rescue StandardError => error
-  erb :login, locals: { error: error }
+rescue StandardError => e
+  erb :login, locals: { error: e }
 end
 
 # REGISTER
 # ==============================================================================
 
-get "/register" do
+get '/register' do
   if session[:user]
-    redirect "/"
+    redirect '/'
   else
     erb :register, locals: { error: nil }
   end
 end
 
-post "/register" do
+post '/register' do
   if session[:user]
-    redirect "/"
+    redirect '/'
   else
     user =
       client.users.create(
         confirmation: params[:confirmation],
         password: params[:password],
-        email: params[:email])
+        email: params[:email]
+      )
 
     session[:user] = user.id
 
     redirect "/users/#{user.id}"
   end
-rescue StandardError => error
-  erb :register, locals: { error: error }
+rescue StandardError => e
+  erb :register, locals: { error: e }
 end
 
 # LOGOUT
 # ==============================================================================
 
-get "/logout" do
+get '/logout' do
   session[:user] = nil
 
-  redirect "/"
+  redirect '/'
 end
 
 # USER
 # ==============================================================================
 
-get "/users/:id" do
+get '/users/:id' do
   user =
-    client.users.get(params["id"])
+    client.users.get(params['id'])
 
   erb :user, locals: { user: user }
-rescue
-  redirect "/"
+rescue StandardError
+  redirect '/'
 end
 
-post "/users/:id/delete" do
-  client.users.delete(params["id"])
+post '/users/:id/delete' do
+  client.users.delete(params['id'])
 
-  if session[:user] == params["id"]
-    session[:user] = nil
-  end
+  session[:user] = nil if session[:user] == params['id']
 
-  redirect "/"
-rescue
-  redirect "/"
+  redirect '/'
+rescue StandardError
+  redirect '/'
 end
 
 # SEND EMAIL
 # ==============================================================================
 
-get "/send-email" do
+get '/send-email' do
   erb :send_email, locals: { error: nil, success: nil }
 end
 
-post "/send-email" do
+post '/send-email' do
   client.emails.send(
     subject: params[:subject],
     from: params[:from],
     text: params[:text],
     html: params[:html],
-    to: params[:to])
+    to: params[:to]
+  )
 
   erb :send_email, locals: { error: nil, success: true }
-rescue StandardError => error
-  erb :send_email, locals: { error: error, success: nil }
+rescue StandardError => e
+  erb :send_email, locals: { error: e, success: nil }
 end
 
 # UPLOAD FILE
 # ==============================================================================
 
-get "/upload-file" do
+get '/upload-file' do
   erb :upload_file, locals: { error: nil }
 end
 
-post "/upload-file" do
+post '/upload-file' do
   file =
     client.files.create(
       path: params[:file][:tempfile].path,
       filename: params[:file][:filename],
-      type: params[:file][:type])
+      type: params[:file][:type]
+    )
 
   redirect "/files/#{file.id}"
-rescue StandardError => error
-  erb :upload_file, locals: { error: error }
+rescue StandardError => e
+  erb :upload_file, locals: { error: e }
 end
 
 # FILE
 # ==============================================================================
 
-get "/files/:id" do
+get '/files/:id' do
   file =
-    client.files.get(params["id"])
+    client.files.get(params['id'])
 
   erb :file, locals: { file: file }
-rescue
-  redirect "/"
+rescue StandardError
+  redirect '/'
 end
 
-post "/files/:id/delete" do
-  client.files.delete(params["id"])
+post '/files/:id/delete' do
+  client.files.delete(params['id'])
 
-  redirect "/"
-rescue
-  redirect "/"
+  redirect '/'
+rescue StandardError
+  redirect '/'
 end
 
 # UPLOAD IMAGE
 # ==============================================================================
 
-get "/upload-image" do
+get '/upload-image' do
   erb :upload_image, locals: { error: nil }
 end
 
-post "/upload-image" do
+post '/upload-image' do
   image =
     client.images.create(
       path: params[:image][:tempfile].path,
       filename: params[:image][:filename],
-      type: params[:image][:type])
+      type: params[:image][:type]
+    )
 
   redirect "/images/#{image.id}"
-rescue StandardError => error
-  erb :upload_file, locals: { error: error }
+rescue StandardError => e
+  erb :upload_file, locals: { error: e }
 end
 
 # IMAGE
 # ==============================================================================
 
-get "/images/:id" do
+get '/images/:id' do
   image =
-    client.images.get(params["id"])
+    client.images.get(params['id'])
 
   erb :image, locals: { image: image }
-rescue
-  redirect "/"
+rescue StandardError
+  redirect '/'
 end
 
-post "/images/:id/delete" do
-  client.images.delete(params["id"])
+post '/images/:id/delete' do
+  client.images.delete(params['id'])
 
-  redirect "/"
-rescue
-  redirect "/"
+  redirect '/'
+rescue StandardError
+  redirect '/'
 end
