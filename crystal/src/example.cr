@@ -122,6 +122,16 @@ end
 # USER
 # ==============================================================================
 
+get "/users" do |env|
+  page =
+    env.params.query["page"]?.try(&.to_i32) || 1
+
+  data =
+    client.users.list(page: page)
+
+  render "src/views/users.ecr", "src/views/layout.ecr"
+end
+
 get "/users/:id" do |env|
   user =
     client.users.get(env.params.url["id"]?.to_s)
@@ -138,9 +148,9 @@ post "/users/:id/delete" do |env|
     env.session.delete_string("user")
   end
 
-  env.redirect "/"
+  env.redirect "/users"
 rescue
-  env.redirect "/"
+  env.redirect "/users"
 end
 
 # SEND EMAIL
@@ -213,6 +223,16 @@ end
 # FILE
 # ==============================================================================
 
+get "/files" do |env|
+  page =
+    env.params.query["page"]?.try(&.to_i32) || 1
+
+  data =
+    client.files.list(page: page)
+
+  render "src/views/files.ecr", "src/views/layout.ecr"
+end
+
 get "/files/:id" do |env|
   file =
     client.files.get(env.params.url["id"]?.to_s)
@@ -225,13 +245,23 @@ end
 post "/files/:id/delete" do |env|
   client.files.delete(env.params.url["id"]?.to_s)
 
-  env.redirect "/"
+  env.redirect "/files"
 rescue
-  env.redirect "/"
+  env.redirect "/files"
 end
 
 # UPLOAD IMAGE
 # ==============================================================================
+
+get "/images" do |env|
+  page =
+    env.params.query["page"]?.try(&.to_i32) || 1
+
+  data =
+    client.images.list(page: page)
+
+  render "src/views/images.ecr", "src/views/layout.ecr"
+end
 
 get "/upload-image" do |env|
   error = nil
@@ -264,9 +294,9 @@ end
 post "/images/:id/delete" do |env|
   client.images.delete(env.params.url["id"]?.to_s)
 
-  env.redirect "/"
+  env.redirect "/images"
 rescue
-  env.redirect "/"
+  env.redirect "/images"
 end
 
 Kemal.run
