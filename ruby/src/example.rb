@@ -97,13 +97,23 @@ end
 # USER
 # ==============================================================================
 
+get '/users' do
+  page =
+    params[:page]&.to_i || 1
+
+  data =
+    client.users.list(page: page)
+
+  erb :users, locals: { data: data, page: page }
+end
+
 get '/users/:id' do
   user =
     client.users.get(params['id'])
 
   erb :user, locals: { user: user }
 rescue StandardError
-  redirect '/'
+  redirect '/users'
 end
 
 post '/users/:id/delete' do
@@ -111,9 +121,9 @@ post '/users/:id/delete' do
 
   session[:user] = nil if session[:user] == params['id']
 
-  redirect '/'
+  redirect '/users'
 rescue StandardError
-  redirect '/'
+  redirect '/users'
 end
 
 # SEND EMAIL
@@ -160,6 +170,16 @@ end
 # FILE
 # ==============================================================================
 
+get '/files' do
+  page =
+    params[:page]&.to_i || 1
+
+  data =
+    client.files.list(page: page)
+
+  erb :files, locals: { data: data, page: page }
+end
+
 get '/files/:id' do
   file =
     client.files.get(params['id'])
@@ -199,6 +219,16 @@ end
 
 # IMAGE
 # ==============================================================================
+
+get '/images' do
+  page =
+    params[:page]&.to_i || 1
+
+  data =
+    client.images.list(page: page)
+
+  erb :images, locals: { data: data, page: page }
+end
 
 get '/images/:id' do
   image =

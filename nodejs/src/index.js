@@ -134,13 +134,23 @@ app.get('/logout', async (req, res) => {
 // USER
 // =============================================================================
 
+app.get('/users', async (req, res) => {
+  const page =
+    req.query.page ? parseInt(req.query.page) : 1
+
+  const data =
+    await client.users.list(page);
+
+  res.render('users', { data, page })
+})
+
 app.get('/users/:id', async (req, res) => {
   try {
     const user = await client.users.get(req.params.id);
 
     res.render('user', { user });
   } catch (error) {
-    res.render('not-found');
+    res.redirect('/users');
   }
 });
 
@@ -152,9 +162,9 @@ app.post('/users/:id/delete', async (req, res) => {
       req.session.userId = null;
     }
 
-    res.redirect('/');
+    res.redirect('/users');
   } catch (error) {
-    res.render('not-found');
+    res.redirect('/users');
   }
 });
 
@@ -215,13 +225,23 @@ app.post('/upload-file', upload.single('file'), async (req, res) => {
 // FILE
 // =============================================================================
 
+app.get('/files', async (req, res) => {
+  const page =
+    req.query.page ? parseInt(req.query.page) : 1
+
+  const data =
+    await client.files.list(page);
+
+  res.render('files', { data, page })
+})
+
 app.get('/files/:id', async (req, res) => {
   try {
     const file = await client.files.get(req.params.id);
 
     res.render('file', { file });
   } catch (error) {
-    res.render('not-found');
+    res.redirect('/files');
   }
 });
 
@@ -229,14 +249,24 @@ app.post('/files/:id/delete', async (req, res) => {
   try {
     await client.files.delete(req.params.id);
 
-    res.redirect('/');
+    res.redirect('/files');
   } catch (error) {
-    res.render('not-found');
+    res.redirect('/files');
   }
 });
 
 // UPLOAD IMAGE
 // =============================================================================
+
+app.get('/images', async (req, res) => {
+  const page =
+    req.query.page ? parseInt(req.query.page) : 1
+
+  const data =
+    await client.images.list(page);
+
+  res.render('images', { data, page })
+})
 
 app.get('/upload-image', async (req, res) => {
   res.render('upload-image');
@@ -268,7 +298,7 @@ app.get('/images/:id', async (req, res) => {
 
     res.render('image', { image });
   } catch (error) {
-    res.render('not-found');
+    res.redirect('/images');
   }
 });
 
@@ -276,9 +306,9 @@ app.post('/images/:id/delete', async (req, res) => {
   try {
     await client.images.delete(req.params.id);
 
-    res.redirect('/');
+    res.redirect('/images');
   } catch (error) {
-    res.render('not-found');
+    res.redirect('/images');
   }
 });
 

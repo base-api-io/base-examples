@@ -166,10 +166,10 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
 
-base-api-io@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/base-api-io/-/base-api-io-1.0.0.tgz#23e7025dc37af3639a3663245a4066a6fd9d501d"
-  integrity sha512-uQaVmzXxp/I8IsHexAvy/W69XdZnUxkkwLsfp8vb23NAs05S3o5VCY7twG3abFiq53mUMJPdiPVxDauBPb7PJA==
+base-api-io@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/base-api-io/-/base-api-io-1.1.0.tgz#5d3cce8bfe85cbac03ff9207037cc467a4ca7d33"
+  integrity sha512-Ju2rmVV1fDUxBKpD5hnsriWMzFKn0qhvCf2EBgA9wS+r3XS7Io5S1YTz0HncoGYMeThGTISMJsn+Gys4kIVggw==
   dependencies:
     check-types "^9.0.1"
     needle "^2.4.0"
