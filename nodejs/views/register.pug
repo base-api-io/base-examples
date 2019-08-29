@@ -30,7 +30,14 @@ block content
         input#passwordConfirmation.form-control(
           placeholder='Password Confirmation'
           name="confirmation"
-          value=convrimation
+          value=confirmation
           type='password' )
+
+      .form-group
+        label(for='custom_data') Custom Data
+        textarea#custom_data.form-control(
+          placeholder='Custom Data'
+          name="custom_data"
+          type='password' )= custom_data
 
       button.btn.btn-primary(type='submit') Submit

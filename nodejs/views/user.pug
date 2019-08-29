@@ -17,11 +17,16 @@ block content
           td Email
           td= user.email
         tr
+          td Custom Data
+          td= user.custom_data
+        tr
           td Created At
           td= user.created_at
 
-    form(method="POST", action="/users/" + user.id + "/delete")
-      button.btn.btn-danger Delete User
+    .d-flex.align-items-start
+      form(method="POST", action="/users/" + user.id + "/delete")
+        button.btn.btn-danger Delete User
+      a.btn.btn-primary.ml-2(href="/users/" + user.id + "/update") Update User
 
     h4.mt-5 Response
     .card.bg-light

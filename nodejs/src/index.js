@@ -79,6 +79,7 @@ app.post('/register', async (req, res) => {
         req.body.email,
         req.body.password,
         req.body.confirmation,
+        JSON.parse(req.body.custom_data)
       );
 
       req.session.userId = user.id;
@@ -151,6 +152,41 @@ app.get('/users/:id', async (req, res) => {
     res.render('user', { user });
   } catch (error) {
     res.redirect('/users');
+  }
+});
+
+app.get('/users/:id/update', async (req, res) => {
+  try {
+    const user = await client.users.get(req.params.id);
+
+    res.render('update-user', { user });
+  } catch (error) {
+    res.render('update-user', { user: {}, error: getErrorMessage(error) });
+  }
+});
+
+app.post('/users/:id/update', async (req, res) => {
+  try {
+    const user = await client.users.get(req.params.id);
+
+    custom_data =
+      (req.body.custom_data.trim() === "") ? null : JSON.parse(req.body.custom_data)
+
+    await client.users.update(
+      user.id,
+      req.body.email,
+      custom_data
+    );
+
+    res.redirect(`/users/${user.id}`);
+  } catch (error) {
+    res.render('update-user', {
+      user: {
+        custom_data: req.body.custom_data,
+        email: req.body.email
+      },
+      error: getErrorMessage(error)
+    });
   }
 });
 

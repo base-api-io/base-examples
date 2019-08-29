@@ -1,0 +1,27 @@
+extends layout.pug
+
+block content
+  .container.mt-5
+    h1 Update User
+
+    form(method="POST" action="/users/" + user.id + "/update")
+      if error
+        .alert.alert-danger
+          = error
+
+      .form-group
+        label(for='email') Email address
+        input#email.form-control(
+          placeholder='Enter email'
+          type='email'
+          name="email"
+          value=user.email)
+
+      .form-group
+        label(for='custom_data') Custom Data
+        textarea#custom_data.form-control(
+          placeholder='Custom Data'
+          name="custom_data"
+          type='password' )= JSON.stringify(user.custom_data)
+
+      button.btn.btn-primary(type='submit') Submit
