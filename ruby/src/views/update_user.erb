@@ -1,0 +1,40 @@
+<div class="container mt-5">
+  <h1>Update User</h1>
+
+  <% if error %>
+    <div class="alert alert-danger">
+      <%= get_error_message(error) %>
+    </div>
+  <% end %>
+
+  <form method="POST" action="/users/<%= user.id %>">
+    <div class="form-group">
+      <label for="email">
+        Email address
+      </label>
+
+      <input
+        value="<%= user.email %>"
+        placeholder="Enter email"
+        class="form-control"
+        type="email"
+        name="email"
+        id="email"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="custom_data">
+        Custom Data
+      </label>
+
+      <textarea
+        placeholder="Custom Data"
+        class="form-control"
+        name="custom_data"
+        id="custom_data"><%= user.custom_data.to_json %></textarea>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+  </form>
+</div>

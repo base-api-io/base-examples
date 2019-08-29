@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'bundler/setup'
 require 'sinatra'
 require 'base'
 
@@ -13,9 +14,9 @@ def get_error_message(error)
   when Base::InvalidRequest
     error.data['error']
   when Base::UnkownError
-    'Something went wrong!'
+    "Something went wrong: #{error.error}"
   else
-    'Something went wrong!'
+    "Something went wrong: #{error}"
   end
 end
 
@@ -72,6 +73,7 @@ post '/register' do
   else
     user =
       client.users.create(
+        custom_data: JSON.parse(params[:custom_data]),
         confirmation: params[:confirmation],
         password: params[:password],
         email: params[:email]
@@ -114,6 +116,37 @@ get '/users/:id' do
   erb :user, locals: { user: user }
 rescue StandardError
   redirect '/users'
+end
+
+get '/users/:id/update' do
+  user =
+    client.users.get(params['id'])
+
+  erb :update_user, locals: { user: user, error: nil }
+rescue StandardError
+  redirect '/users'
+end
+
+post '/users/:id' do
+  user =
+    client.users.get(params['id'])
+
+  custom_data =
+    if params[:custom_data].empty?
+      nil
+    else
+      JSON.parse(params[:custom_data])
+    end
+
+  client.users.update(
+    custom_data: custom_data,
+    email: params[:email],
+    id: user.id
+  )
+
+  redirect "/users/#{user.id}"
+rescue StandardError => e
+  erb :update_user, locals: { error: e, user: user }
 end
 
 post '/users/:id/delete' do
