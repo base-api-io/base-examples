@@ -1,5 +1,5 @@
 <div class="container mt-5">
-  <h1>Login</h1>
+  <h1>Register</h1>
 
   <% if error %>
     <div class="alert alert-danger">
@@ -51,6 +51,18 @@
         id="confirmation"
         type="password"
       />
+    </div>
+
+    <div class="form-group">
+      <label for="custom_data">
+        Custom Data
+      </label>
+
+      <textarea
+        placeholder="Custom Data"
+        class="form-control"
+        name="custom_data"
+        id="custom_data"><%= custom_data %></textarea>
     </div>
 
     <button class="btn btn-primary" type="submit">Submit</button>

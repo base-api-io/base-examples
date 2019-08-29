@@ -27,6 +27,13 @@
       </tr>
 
       <tr>
+        <td>Custom Data</td>
+        <td>
+          <%= user.custom_data.to_json %>
+        </td>
+      </tr>
+
+      <tr>
         <td>Created At</td>
         <td>
           <%= user.created_at %>
@@ -35,11 +42,17 @@
     </tbody>
   </table>
 
-  <form method="POST" action="/users/<%= user.id %>/delete">
-    <button class="btn btn-danger">
-      Delete User
-    </button>
-  </form>
+  <div class="d-flex align-items-start">
+    <form method="POST" action="/users/<%= user.id %>/delete">
+      <button class="btn btn-danger">
+        Delete User
+      </button>
+    </form>
+
+    <a href="/users/<%= user.id %>/update" class="btn btn-primary ml-2">
+      Edit User
+    </a>
+  </div>
 
   <h4 class="mt-5">Response</h4>
 

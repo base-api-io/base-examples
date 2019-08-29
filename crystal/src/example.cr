@@ -77,6 +77,7 @@ get "/register" do |env|
     env.redirect "/"
   else
     confirmation = ""
+    custom_data = ""
     password = ""
     email = ""
     error = nil
@@ -98,9 +99,20 @@ post "/register" do |env|
     email =
       env.params.body["email"].as(String)
 
+    custom_data =
+      env.params.body["custom_data"].as(String)
+
+    custom_data =
+      if custom_data.strip.empty?
+        "null"
+      else
+        JSON.parse(custom_data)
+      end
+
     user =
       client.users.create(
         confirmation: confirmation,
+        custom_data: custom_data,
         password: password,
         email: email)
 
@@ -137,6 +149,63 @@ get "/users/:id" do |env|
     client.users.get(env.params.url["id"]?.to_s)
 
   render "src/views/user.ecr", "src/views/layout.ecr"
+rescue
+  env.redirect "/"
+end
+
+get "/users/:id/update" do |env|
+  error = nil
+
+  id =
+    env.params.url["id"]?.to_s
+
+  user =
+    client.users.get(id)
+
+  email =
+    user.email
+
+  custom_data =
+    user.custom_data
+
+  render "src/views/update_user.ecr", "src/views/layout.ecr"
+rescue
+  env.redirect "/"
+end
+
+post "/users/:id" do |env|
+  id =
+    env.params.url["id"]?.to_s
+
+  user =
+    client.users.get(id)
+
+  email =
+    env.params.body["email"].as(String)
+
+  custom_data =
+    env.params.body["custom_data"].as(String)
+
+  custom_data =
+    if custom_data.strip.empty?
+      "null"
+    else
+      JSON.parse(custom_data)
+    end
+
+  begin
+    client.users.update(
+      custom_data: custom_data,
+      email: email,
+      id: user.id)
+
+    env.redirect "/users/#{user.id}"
+  rescue e
+    error =
+      get_error_message(e)
+
+    render "src/views/update_user.ecr", "src/views/layout.ecr"
+  end
 rescue
   env.redirect "/"
 end
