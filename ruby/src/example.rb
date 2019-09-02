@@ -5,7 +5,7 @@ require 'sinatra'
 require 'base'
 
 client =
-  Base::Client.new(access_token: '4dcfbd28-ae85-4370-9529-45cced846cba')
+  Base::Client.new(access_token: "c8d4600b-6334-4b1c-8b5c-63722a923f60", url: "http://localhost:8080")
 
 def get_error_message(error)
   case error
@@ -44,8 +44,8 @@ post '/login' do
   else
     user =
       client.sessions.authenticate(
-        password: params['password'],
-        email: params['email']
+        password: params[:password],
+        email: params[:email]
       )
 
     session[:user] = user.id
@@ -111,7 +111,7 @@ end
 
 get '/users/:id' do
   user =
-    client.users.get(params['id'])
+    client.users.get(params[:id])
 
   erb :user, locals: { user: user }
 rescue StandardError
@@ -120,7 +120,7 @@ end
 
 get '/users/:id/update' do
   user =
-    client.users.get(params['id'])
+    client.users.get(params[:id])
 
   erb :update_user, locals: { user: user, error: nil }
 rescue StandardError
@@ -129,7 +129,7 @@ end
 
 post '/users/:id' do
   user =
-    client.users.get(params['id'])
+    client.users.get(params[:id])
 
   custom_data =
     if params[:custom_data].empty?
@@ -150,9 +150,9 @@ rescue StandardError => e
 end
 
 post '/users/:id/delete' do
-  client.users.delete(params['id'])
+  client.users.delete(params[:id])
 
-  session[:user] = nil if session[:user] == params['id']
+  session[:user] = nil if session[:user] == params[:id]
 
   redirect '/users'
 rescue StandardError
@@ -215,7 +215,7 @@ end
 
 get '/files/:id' do
   file =
-    client.files.get(params['id'])
+    client.files.get(params[:id])
 
   erb :file, locals: { file: file }
 rescue StandardError
@@ -223,7 +223,7 @@ rescue StandardError
 end
 
 post '/files/:id/delete' do
-  client.files.delete(params['id'])
+  client.files.delete(params[:id])
 
   redirect '/'
 rescue StandardError
@@ -265,7 +265,7 @@ end
 
 get '/images/:id' do
   image =
-    client.images.get(params['id'])
+    client.images.get(params[:id])
 
   erb :image, locals: { image: image }
 rescue StandardError
@@ -273,9 +273,73 @@ rescue StandardError
 end
 
 post '/images/:id/delete' do
-  client.images.delete(params['id'])
+  client.images.delete(params[:id])
 
   redirect '/'
 rescue StandardError
   redirect '/'
+end
+
+# MAILING LISTS
+# ==============================================================================
+
+get "/mailing-lists" do
+  page =
+    params[:page]&.to_i || 1
+
+  data =
+    client.mailing_lists.list(page: page)
+
+  erb :mailing_lists, locals: { data: data, page: page }
+end
+
+get "/mailing-lists/:id" do
+  list =
+    client.mailing_lists.get(params[:id])
+
+  erb :mailing_list, locals: { list: list, client: client }
+rescue
+  redirect "/"
+end
+
+post "/mailing-lists/:id/subscribe" do
+  list =
+    client
+      .mailing_lists
+      .subscribe(
+        id: params[:id],
+        email: params[:email])
+
+  redirect "/mailing-lists/#{params[:id]}"
+rescue
+  redirect "/"
+end
+
+post "/mailing-lists/:id/unsubscribe" do
+  list =
+    client
+      .mailing_lists
+      .unsubscribe(
+        id: params[:id],
+        email: params[:email])
+
+  redirect "/mailing-lists/#{params[:id]}"
+rescue
+  redirect "/"
+end
+
+post "/mailing-lists/:id/send" do
+  list =
+    client
+      .mailing_lists
+      .send(
+        subject: params[:subject],
+        from: params[:from],
+        html: params[:html],
+        text: params[:text],
+        id: params[:id])
+
+  redirect "/mailing-lists/#{id}"
+rescue
+  redirect "/"
 end

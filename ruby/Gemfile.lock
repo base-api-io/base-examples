@@ -1,9 +1,13 @@
+PATH
+  remote: ../../base-ruby
+  specs:
+    base-api-io (1.2.0)
+      faraday (~> 0.15.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.0)
-    base-api-io (1.2.0)
-      faraday (~> 0.15.4)
     faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
     jaro_winkler (1.5.3)
@@ -36,7 +40,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  base-api-io (~> 1.2.0)
+  base-api-io!
   rubocop (~> 0.74.0)
   sinatra (~> 2.0)
 
