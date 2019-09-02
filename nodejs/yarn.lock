@@ -166,13 +166,16 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
 
-base-api-io@^1.2.0:
+"base-api-io@file:../../base-node":
   version "1.2.0"
-  resolved "https://registry.yarnpkg.com/base-api-io/-/base-api-io-1.2.0.tgz#ee5ba13a9ebd3c44aebcb7e7c808e3b1a52154f3"
-  integrity sha512-cVht9l7nOjolZTKtBM5cVVQq7KfFwUzBktrwOhBhdds7nOKRTcnhbxhfr0ZfvwPsv/QQb7TWdvuOBdVJQpyccA==
   dependencies:
     check-types "^9.0.1"
     needle "^2.4.0"
+
+bluebird@^3.1.1:
+  version "3.5.5"
+  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.5.tgz#a8d0afd73251effbbd5fe384a77d73003c17a71f"
+  integrity sha512-5am6HnnfN+urzt4yfg7IgTbotDjIT/u8AJpEt0sIU9FtXfVeezXAPKswrG+xKUCOYAINpSdgZVDU6QFh+cuH3w==
 
 body-parser@1.19.0, body-parser@^1.19.0:
   version "1.19.0"
@@ -319,6 +322,13 @@ confusing-browser-globals@^1.0.7:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/confusing-browser-globals/-/confusing-browser-globals-1.0.8.tgz#93ffec1f82a6e2bf2bc36769cc3a92fa20e502f3"
   integrity sha512-lI7asCibVJ6Qd3FGU7mu4sfG4try4LX3+GVS+Gv8UlrEf2AeW57piecapnog2UHZSbcX/P/1UDWVaTsblowlZg==
+
+consolidate@^0.15.1:
+  version "0.15.1"
+  resolved "https://registry.yarnpkg.com/consolidate/-/consolidate-0.15.1.tgz#21ab043235c71a07d45d9aad98593b0dba56bab7"
+  integrity sha512-DW46nrsMJgy9kqAbPt5rKaCr7uFtpo4mSUvLHIUbJEjm0vo+aY5QLwBUq3FK4tRnJr/X0Psc0C4jf/h+HtXSMw==
+  dependencies:
+    bluebird "^3.1.1"
 
 constantinople@^3.0.1, constantinople@^3.1.2:
   version "3.1.2"
@@ -1551,6 +1561,18 @@ punycode@^2.1.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
+
+q@0.8.x:
+  version "0.8.12"
+  resolved "https://registry.yarnpkg.com/q/-/q-0.8.12.tgz#9162a91e11819c4bcda7da15cf5fefaad0778823"
+  integrity sha1-kWKpHhGBnEvNp9oVz1/vqtB3iCM=
+
+qejs@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/qejs/-/qejs-3.0.5.tgz#c78eaba5cef05f48de3353c9d07ad692ffa8b492"
+  integrity sha1-x46rpc7wX0jeM1PJ0HrWkv+otJI=
+  dependencies:
+    q "0.8.x"
 
 qs@6.7.0:
   version "6.7.0"

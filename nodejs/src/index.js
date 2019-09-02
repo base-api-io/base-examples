@@ -1,5 +1,6 @@
 const bodyParser = require('body-parser');
 const session = require('cookie-session');
+const engines = require('consolidate');
 const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
@@ -27,7 +28,9 @@ const upload = multer({
 
 const app = express();
 
-app.set('view engine', 'pug');
+app.engine('ejs', engines.qejs);
+
+app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -57,7 +60,7 @@ const getErrorMessage = (error) => {
 // CREATE A CLIENT
 // =============================================================================
 
-const client = new Client('4dcfbd28-ae85-4370-9529-45cced846cba');
+const client = new Client('c8d4600b-6334-4b1c-8b5c-63722a923f60', "http://localhost:8080");
 
 // REGISTER
 // =============================================================================
@@ -66,7 +69,13 @@ app.get('/register', async (req, res) => {
   if (res.locals.loggedIn) {
     res.redirect('/');
   } else {
-    res.render('register', {});
+    res.render('register', {
+      confirmation: "",
+      custom_data: "",
+      password: "",
+      error: null,
+      email: ""
+    });
   }
 });
 
@@ -87,6 +96,8 @@ app.post('/register', async (req, res) => {
     } catch (error) {
       res.render('register', {
         error: getErrorMessage(error),
+        confirmation: req.body.confirmation,
+        custom_data: req.body.custom_data,
         password: req.body.password,
         email: req.body.email,
       });
@@ -101,7 +112,7 @@ app.get('/login', async (req, res) => {
   if (res.locals.loggedIn) {
     res.redirect('/');
   } else {
-    res.render('login');
+    res.render('login', { error: null, email: "", password: "" });
   }
 });
 
@@ -159,13 +170,13 @@ app.get('/users/:id/update', async (req, res) => {
   try {
     const user = await client.users.get(req.params.id);
 
-    res.render('update-user', { user });
+    res.render('update-user', {  error: null, id: req.params.id, email: user.email, custom_data: user.custom_data });
   } catch (error) {
-    res.render('update-user', { user: {}, error: getErrorMessage(error) });
+    res.render('update-user', {  error: getErrorMessage(error), id: req.params.id, email: req.params.email, custom_data: req.params.custom_data });
   }
 });
 
-app.post('/users/:id/update', async (req, res) => {
+app.post('/users/:id', async (req, res) => {
   try {
     const user = await client.users.get(req.params.id);
 
@@ -353,6 +364,67 @@ app.post('/images/:id/delete', async (req, res) => {
 
 app.get('/', async (req, res) => {
   res.render('index');
+});
+
+// MAILING LISTS
+// =============================================================================
+
+app.get('/mailing-lists', async (req, res) => {
+  const page =
+    req.query.page ? parseInt(req.query.page) : 1
+
+  const data =
+    await client.mailingLists.list(page);
+
+  res.render('mailing-lists', { data, page })
+})
+
+app.get('/mailing-lists/:id', async (req, res) => {
+  try {
+    const list = await client.mailingLists.get(req.params.id);
+
+    res.render('mailing-list', { list, client });
+  } catch (error) {
+    res.redirect('/mailing-lists');
+  }
+});
+
+app.post('/mailing-lists/:id/subscribe', async (req, res) => {
+  try {
+    const list =
+      await client.mailingLists.subscribe(req.params.id, req.body.email);
+
+    res.redirect(`/mailing-lists/${req.params.id}`)
+  } catch (error) {
+    res.redirect('/mailing-lists');
+  }
+});
+
+app.post('/mailing-lists/:id/unsubscribe', async (req, res) => {
+  try {
+    const list =
+      await client.mailingLists.unsubscribe(req.params.id, req.body.email);
+
+    res.redirect(`/mailing-lists/${req.params.id}`)
+  } catch (error) {
+    res.redirect('/mailing-lists');
+  }
+});
+
+app.post('/mailing-lists/:id/send', async (req, res) => {
+  try {
+    const list =
+      await client.mailingLists.send(
+        req.params.id,
+        req.body.subject,
+        req.body.from,
+        req.body.html,
+        req.body.text)
+
+    res.redirect(`/mailing-lists/${req.params.id}`)
+  } catch (error) {
+    res.redirect('/mailing-lists');
+  }
 });
 
 app.listen(3000);
