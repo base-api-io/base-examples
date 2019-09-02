@@ -3,7 +3,7 @@ require "kemal"
 require "kemal-session"
 
 client =
-  Base::Client.new(access_token: "4dcfbd28-ae85-4370-9529-45cced846cba")
+  Base::Client.new(access_token: "c8d4600b-6334-4b1c-8b5c-63722a923f60", url: "http://localhost:8080")
 
 Kemal::Session.config do |config|
   config.cookie_name = "session_id"
@@ -366,6 +366,88 @@ post "/images/:id/delete" do |env|
   env.redirect "/images"
 rescue
   env.redirect "/images"
+end
+
+# MAILING LISTS
+# ==============================================================================
+
+get "/mailing-lists" do |env|
+  page =
+    env.params.query["page"]?.try(&.to_i32) || 1
+
+  data =
+    client.mailing_lists.list(page: page)
+
+  render "src/views/mailing-lists.ecr", "src/views/layout.ecr"
+end
+
+get "/mailing-lists/:id" do |env|
+  list =
+    client.mailing_lists.get(env.params.url["id"]?.to_s)
+
+  render "src/views/mailing-list.ecr", "src/views/layout.ecr"
+rescue
+  env.redirect "/"
+end
+
+post "/mailing-lists/:id/subscribe" do |env|
+  id =
+    env.params.url["id"]?.to_s
+
+  email =
+    env.params.body["email"].as(String)
+
+  list =
+    client
+      .mailing_lists
+      .subscribe(id: id, email: email)
+
+  env.redirect "/mailing-lists/#{id}"
+rescue
+  env.redirect "/"
+end
+
+post "/mailing-lists/:id/unsubscribe" do |env|
+  id =
+    env.params.url["id"]?.to_s
+
+  email =
+    env.params.body["email"].as(String)
+
+  list =
+    client
+      .mailing_lists
+      .unsubscribe(id: id, email: email)
+
+  env.redirect "/mailing-lists/#{id}"
+rescue
+  env.redirect "/"
+end
+
+post "/mailing-lists/:id/send" do |env|
+  id =
+    env.params.url["id"]?.to_s
+
+  from =
+    env.params.body["from"].as(String)
+
+  subject =
+    env.params.body["subject"].as(String)
+
+  html =
+    env.params.body["html"].as(String)
+
+  text =
+    env.params.body["text"].as(String)
+
+  list =
+    client
+      .mailing_lists
+      .send(id: id, from: from, subject: subject, html: html, text: text)
+
+  env.redirect "/mailing-lists/#{id}"
+rescue
+  env.redirect "/"
 end
 
 Kemal.run
