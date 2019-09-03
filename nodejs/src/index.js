@@ -54,13 +54,13 @@ const getErrorMessage = (error) => {
   } if (error instanceof Unauthorized) {
     return 'Unauthorized!';
   }
-  return 'Something went wrong!';
+  return `Something went wrong: ${error.toString()}`;
 };
 
 // CREATE A CLIENT
 // =============================================================================
 
-const client = new Client('c8d4600b-6334-4b1c-8b5c-63722a923f60', "http://localhost:8080");
+const client = new Client('c8d4600b-6334-4b1c-8b5c-63722a923f60', 'http://localhost:8080');
 
 // REGISTER
 // =============================================================================
@@ -70,11 +70,11 @@ app.get('/register', async (req, res) => {
     res.redirect('/');
   } else {
     res.render('register', {
-      confirmation: "",
-      custom_data: "",
-      password: "",
+      confirmation: '',
+      custom_data: '',
+      password: '',
       error: null,
-      email: ""
+      email: '',
     });
   }
 });
@@ -88,7 +88,7 @@ app.post('/register', async (req, res) => {
         req.body.email,
         req.body.password,
         req.body.confirmation,
-        JSON.parse(req.body.custom_data)
+        req.body.custom_data && JSON.parse(req.body.custom_data),
       );
 
       req.session.userId = user.id;
@@ -112,7 +112,11 @@ app.get('/login', async (req, res) => {
   if (res.locals.loggedIn) {
     res.redirect('/');
   } else {
-    res.render('login', { error: null, email: "", password: "" });
+    res.render('login', {
+      password: '',
+      error: null,
+      email: '',
+    });
   }
 });
 
@@ -147,14 +151,12 @@ app.get('/logout', async (req, res) => {
 // =============================================================================
 
 app.get('/users', async (req, res) => {
-  const page =
-    req.query.page ? parseInt(req.query.page) : 1
+  const page = req.query.page ? parseInt(req.query.page, 10) : 1;
 
-  const data =
-    await client.users.list(page);
+  const data = await client.users.list(page);
 
-  res.render('users', { data, page })
-})
+  res.render('users', { data, page });
+});
 
 app.get('/users/:id', async (req, res) => {
   try {
@@ -167,36 +169,48 @@ app.get('/users/:id', async (req, res) => {
 });
 
 app.get('/users/:id/update', async (req, res) => {
-  try {
-    const user = await client.users.get(req.params.id);
+  let error = null;
+  let user = {
+    custom_data: '',
+    email: '',
+    id: '',
+  };
 
-    res.render('update-user', {  error: null, id: req.params.id, email: user.email, custom_data: user.custom_data });
-  } catch (error) {
-    res.render('update-user', {  error: getErrorMessage(error), id: req.params.id, email: req.params.email, custom_data: req.params.custom_data });
+  try {
+    user = await client.users.get(req.params.id);
+  } catch (rawError) {
+    error = getErrorMessage(rawError);
   }
+
+  res.render('update-user', {
+    custom_data: user.custom_data,
+    email: user.email,
+    id: req.params.id,
+    error,
+  });
 });
 
 app.post('/users/:id', async (req, res) => {
+  let customData = '';
+
   try {
     const user = await client.users.get(req.params.id);
 
-    custom_data =
-      (req.body.custom_data.trim() === "") ? null : JSON.parse(req.body.custom_data)
+    customData = (req.body.custom_data.trim() === '') ? null : JSON.parse(req.body.custom_data);
 
     await client.users.update(
       user.id,
       req.body.email,
-      custom_data
+      customData,
     );
 
     res.redirect(`/users/${user.id}`);
   } catch (error) {
     res.render('update-user', {
-      user: {
-        custom_data: req.body.custom_data,
-        email: req.body.email
-      },
-      error: getErrorMessage(error)
+      error: getErrorMessage(error),
+      custom_data: req.body.custom_data,
+      email: req.body.email,
+      id: req.params.id,
     });
   }
 });
@@ -219,10 +233,22 @@ app.post('/users/:id/delete', async (req, res) => {
 // =============================================================================
 
 app.get('/send-email', async (req, res) => {
-  res.render('send-email');
+  res.render('send-email', {
+    success: null,
+    error: null,
+    subject: '',
+    email: '',
+    from: '',
+    html: '',
+    text: '',
+    to: '',
+  });
 });
 
 app.post('/send-email', async (req, res) => {
+  let success = null;
+  let error = null;
+
   try {
     await client.emails.send(
       req.body.subject,
@@ -232,24 +258,27 @@ app.post('/send-email', async (req, res) => {
       req.body.text,
     );
 
-    res.render('send-email', { success: true });
-  } catch (error) {
-    res.render('send-email', {
-      error: getErrorMessage(error),
-      subject: req.body.subject,
-      from: req.body.from,
-      html: req.body.html,
-      text: req.body.text,
-      to: req.body.to,
-    });
+    success = true;
+  } catch (rawError) {
+    error = getErrorMessage(rawError);
   }
+
+  res.render('send-email', {
+    subject: req.body.subject,
+    from: req.body.from,
+    html: req.body.html,
+    text: req.body.text,
+    to: req.body.to,
+    success,
+    error,
+  });
 });
 
 // UPLOAD FILE
 // =============================================================================
 
 app.get('/upload-file', async (req, res) => {
-  res.render('upload-file');
+  res.render('upload-file', { error: null });
 });
 
 app.post('/upload-file', upload.single('file'), async (req, res) => {
@@ -273,14 +302,12 @@ app.post('/upload-file', upload.single('file'), async (req, res) => {
 // =============================================================================
 
 app.get('/files', async (req, res) => {
-  const page =
-    req.query.page ? parseInt(req.query.page) : 1
+  const page = req.query.page ? parseInt(req.query.page, 10) : 1;
 
-  const data =
-    await client.files.list(page);
+  const data = await client.files.list(page);
 
-  res.render('files', { data, page })
-})
+  res.render('files', { data, page });
+});
 
 app.get('/files/:id', async (req, res) => {
   try {
@@ -306,17 +333,15 @@ app.post('/files/:id/delete', async (req, res) => {
 // =============================================================================
 
 app.get('/images', async (req, res) => {
-  const page =
-    req.query.page ? parseInt(req.query.page) : 1
+  const page = req.query.page ? parseInt(req.query.page, 10) : 1;
 
-  const data =
-    await client.images.list(page);
+  const data = await client.images.list(page);
 
-  res.render('images', { data, page })
-})
+  res.render('images', { data, page });
+});
 
 app.get('/upload-image', async (req, res) => {
-  res.render('upload-image');
+  res.render('upload-image', { error: null });
 });
 
 app.post('/upload-image', upload.single('image'), async (req, res) => {
@@ -370,14 +395,12 @@ app.get('/', async (req, res) => {
 // =============================================================================
 
 app.get('/mailing-lists', async (req, res) => {
-  const page =
-    req.query.page ? parseInt(req.query.page) : 1
+  const page = req.query.page ? parseInt(req.query.page, 10) : 1;
 
-  const data =
-    await client.mailingLists.list(page);
+  const data = await client.mailingLists.list(page);
 
-  res.render('mailing-lists', { data, page })
-})
+  res.render('mailing-lists', { data, page });
+});
 
 app.get('/mailing-lists/:id', async (req, res) => {
   try {
@@ -391,10 +414,9 @@ app.get('/mailing-lists/:id', async (req, res) => {
 
 app.post('/mailing-lists/:id/subscribe', async (req, res) => {
   try {
-    const list =
-      await client.mailingLists.subscribe(req.params.id, req.body.email);
+    await client.mailingLists.subscribe(req.params.id, req.body.email);
 
-    res.redirect(`/mailing-lists/${req.params.id}`)
+    res.redirect(`/mailing-lists/${req.params.id}`);
   } catch (error) {
     res.redirect('/mailing-lists');
   }
@@ -402,10 +424,9 @@ app.post('/mailing-lists/:id/subscribe', async (req, res) => {
 
 app.post('/mailing-lists/:id/unsubscribe', async (req, res) => {
   try {
-    const list =
-      await client.mailingLists.unsubscribe(req.params.id, req.body.email);
+    await client.mailingLists.unsubscribe(req.params.id, req.body.email);
 
-    res.redirect(`/mailing-lists/${req.params.id}`)
+    res.redirect(`/mailing-lists/${req.params.id}`);
   } catch (error) {
     res.redirect('/mailing-lists');
   }
@@ -413,15 +434,15 @@ app.post('/mailing-lists/:id/unsubscribe', async (req, res) => {
 
 app.post('/mailing-lists/:id/send', async (req, res) => {
   try {
-    const list =
-      await client.mailingLists.send(
-        req.params.id,
-        req.body.subject,
-        req.body.from,
-        req.body.html,
-        req.body.text)
+    await client.mailingLists.send(
+      req.params.id,
+      req.body.subject,
+      req.body.from,
+      req.body.html,
+      req.body.text,
+    );
 
-    res.redirect(`/mailing-lists/${req.params.id}`)
+    res.redirect(`/mailing-lists/${req.params.id}`);
   } catch (error) {
     res.redirect('/mailing-lists');
   }

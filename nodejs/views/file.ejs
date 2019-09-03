@@ -1,0 +1,60 @@
+<% inherits('layout') %>
+
+<div class="container mt-5">
+  <h1 class="mb-4">
+    File Details
+  </h1>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>ID</td>
+        <td>
+          <%= file.id %>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Extension</td>
+        <td>
+          <%= file.extension %>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Size</td>
+        <td>
+          <%= file.size %>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Created At</td>
+        <td>
+          <%= file.created_at %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <form method="POST" action="/files/<%= file.id %>/delete">
+    <button class="btn btn-danger">
+      Delete File
+    </button>
+  </form>
+
+  <h4 class="mt-5">Response</h4>
+
+  <div class="card bg-light">
+    <div class="card-body">
+      <pre><code><%= JSON.stringify(file, null, "  ") %></code></pre>
+    </div>
+  </div>
+</div>
