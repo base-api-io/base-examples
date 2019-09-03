@@ -1,0 +1,49 @@
+<% inherits('layout') %>
+
+<div class="container mt-5">
+  <h1 class="mb-4">
+    Users
+  </h1>
+
+  <table class="table mb-4">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Created At</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% data.items.forEach((user) => { %>
+        <tr>
+          <td>
+            <%= user.id %>
+          </td>
+
+          <td>
+            <a href="/users/<%= user.id %>">
+              <%= user.email %>
+            </a>
+          </td>
+
+          <td>
+            <%= user.created_at %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <% if (page > 1) { %>
+    <a href="/users?page=<%= page - 1 %>" class="btn btn-primary mr-2">
+      Previous
+    </a>
+  <% } %>
+
+  <% if ((data.metadata.count - (page * 10)) > 0) { %>
+    <a href="/users?page=<%= page + 1 %>" class="btn btn-primary">
+      Next
+    </a>
+  <% } %>
+</div>

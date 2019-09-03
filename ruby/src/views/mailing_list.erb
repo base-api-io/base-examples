@@ -1,0 +1,156 @@
+<div class="container mt-5">
+  <h1 class="mb-4">
+    <%= list.name %>
+  </h1>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Unsubscribe Link</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% list.emails.each do |email| %>
+        <tr>
+          <td>
+            <%= email %>
+          </td>
+
+          <td>
+            <a href="<%= client.mailing_lists.unsubscribe_url(id: list.id, email: email) %>">
+              Unsubscribe
+            </a>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="row mt-5">
+    <div class="col-md-4">
+      <h2>
+        Subscribe an email
+      </h2>
+
+      <form method="POST" action="/mailing-lists/<%= list.id %>/subscribe">
+        <div class="form-group">
+          <label for="email">
+            Email address
+          </label>
+
+          <input
+            placeholder="Enter email"
+            class="form-control"
+            type="email"
+            name="email"
+            id="email"
+            value=""
+          />
+        </div>
+
+        <button class="btn btn-primary">
+          Subscribe
+        </button>
+      </form>
+    </div>
+
+    <div class="col-md-4">
+      <h2>
+        Unsubscribe an email
+      </h2>
+
+      <form method="POST" action="/mailing-lists/<%= list.id %>/unsubscribe">
+        <div class="form-group">
+          <label for="email">
+            Email address
+          </label>
+
+          <input
+            placeholder="Enter email"
+            class="form-control"
+            type="email"
+            name="email"
+            id="email"
+            value=""
+          />
+        </div>
+
+        <button class="btn btn-primary">
+          Unsubscribe
+        </button>
+      </form>
+    </div>
+
+    <div class="col-md-4">
+      <h2>
+        Send email
+      </h2>
+
+      <form method="POST" action="/mailing-lists/<%= list.id %>/send">
+        <div class="form-group">
+          <label for="from">
+            From email address
+          </label>
+
+          <input
+            placeholder="Enter from address"
+            class="form-control"
+            type="email"
+            name="from"
+            id="from"
+            value=""
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="subject">
+            Subject
+          </label>
+
+          <input
+            placeholder="Enter subject"
+            class="form-control"
+            name="subject"
+            id="subject"
+            type="text"
+            value=""
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="html">
+            HTML Content
+          </label>
+
+          <textarea
+            placeholder="Enter HTML content"
+            class="form-control"
+            name="html"
+            rows="5"
+            id="html"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="text">
+            Text Content
+          </label>
+
+          <textarea
+            placeholder="Enter text content"
+            class="form-control"
+            name="text"
+            rows="5"
+            id="text"
+          ></textarea>
+        </div>
+
+        <button class="btn btn-primary">
+          Send
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

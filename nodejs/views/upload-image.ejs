@@ -1,0 +1,29 @@
+<% inherits('layout') %>
+
+<div class="container mt-5">
+  <h1>Upload Image</h1>
+
+  <% if (error) { %>
+    <div class="alert alert-danger">
+      <%= error %>
+    </div>
+  <% } %>
+
+  <form method="POST" action="/upload-image" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="image">
+        Image
+      </label>
+
+      <input
+        style="height: auto;"
+        class="form-control"
+        name="image"
+        type="file"
+        id="file"
+      />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+  </form>
+</div>

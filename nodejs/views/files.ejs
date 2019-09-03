@@ -1,0 +1,59 @@
+<% inherits('layout') %>
+
+<div class="container mt-5">
+  <h1 class="mb-4">
+    Files
+  </h1>
+
+  <table class="table mb-4">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Extension</th>
+        <th>Size</th>
+        <th>Created At</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% data.items.forEach((file) => { %>
+        <tr>
+          <td>
+            <%= file.id %>
+          </td>
+
+          <td>
+            <a href="/files/<%= file.id %>">
+              <%= file.name %>
+            </a>
+          </td>
+
+          <td>
+            <%= file.extension %>
+          </td>
+
+          <td>
+            <%= file.size %>
+          </td>
+
+          <td>
+            <%= file.created_at %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <% if (page > 1) { %>
+    <a href="/files?page=<%= page - 1 %>" class="btn btn-primary mr-2">
+      Previous
+    </a>
+  <% } %>
+
+  <% if ((data.metadata.count - (page * 10)) > 0) { %>
+    <a href="/files?page=<%= page + 1 %>" class="btn btn-primary">
+      Next
+    </a>
+  <% } %>
+</div>

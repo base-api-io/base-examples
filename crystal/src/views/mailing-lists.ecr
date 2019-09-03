@@ -1,0 +1,52 @@
+<div class="container mt-5">
+  <h1 class="mb-4">
+    Mailing Lists
+  </h1>
+
+  <table class="table mb-4">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Subscribers</th>
+        <th>Created At</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% data.items.each do |list| %>
+        <tr>
+          <td>
+            <%= list.id %>
+          </td>
+
+          <td>
+            <a href="/mailing-lists/<%= list.id %>">
+              <%= list.name %>
+            </a>
+          </td>
+
+          <td>
+            <%= list.emails.size %>
+          </td>
+
+          <td>
+            <%= list.created_at %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <% if page > 1 %>
+    <a href="/mailing-lists?page=<%= page - 1 %>" class="btn btn-primary mr-2">
+      Previous
+    </a>
+  <% end %>
+
+  <% if (data.metadata.count - (page * 10)) > 0 %>
+    <a href="/mailing-lists?page=<%= page + 1 %>" class="btn btn-primary">
+      Next
+    </a>
+  <% end %>
+</div>

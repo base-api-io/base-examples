@@ -1,17 +1,19 @@
+<% inherits('layout') %>
+
 <div class="container mt-5">
   <h1>Send Email</h1>
 
-  <% if error %>
+  <% if (error) { %>
     <div class="alert alert-danger">
-      <%= get_error_message(error) %>
+      <%= error %>
     </div>
-  <% end %>
+  <% } %>
 
-  <% if success %>
+  <% if (success) { %>
     <div class="alert alert-success">
       The email has been sent!
     </div>
-  <% end %>
+  <% } %>
 
   <form method="POST" action="/send-email">
     <div class="form-group">

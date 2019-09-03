@@ -1,0 +1,66 @@
+<% inherits('layout') %>
+
+<div class="container mt-5">
+  <h1 class="mb-4">
+    User Details
+  </h1>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>ID</td>
+        <td>
+          <%= user.id %>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Email</td>
+        <td>
+          <%= user.email %>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Custom Data</td>
+        <td>
+          <%= JSON.stringify(user.custom_data, null, "  ") %>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Created At</td>
+        <td>
+          <%= user.created_at %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="d-flex align-items-start">
+    <form method="POST" action="/users/<%= user.id %>/delete">
+      <button class="btn btn-danger">
+        Delete User
+      </button>
+    </form>
+
+    <a href="/users/<%= user.id %>/update" class="btn btn-primary ml-2">
+      Edit User
+    </a>
+  </div>
+
+  <h4 class="mt-5">Response</h4>
+
+  <div class="card bg-light">
+    <div class="card-body">
+      <pre><code><%= JSON.stringify(user, null, "  ") %></code></pre>
+    </div>
+  </div>
+</div>

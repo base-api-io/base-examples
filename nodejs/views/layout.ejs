@@ -63,13 +63,13 @@
           </ul>
 
           <ul class="navbar-nav">
-            <% if logged_in?(env) %>
+            <% if (loggedIn) { %>
               <li class="nav-item">
                 <a class="nav-link" href="/logout">
                   Logout
                 </a>
               </li>
-            <% else %>
+            <% } else { %>
               <li class="nav-item">
                 <a class="nav-link" href="/login" >
                   Login
@@ -80,11 +80,11 @@
                   Register
                 </a>
               </li>
-            <% end %>
+            <% } %>
           </ul>
       </div>
     </nav>
 
-    <%= content %>
+    <%- contents %>
   </body>
 </html>
