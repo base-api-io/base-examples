@@ -5,7 +5,7 @@ require 'sinatra'
 require 'base'
 
 client =
-  Base::Client.new(access_token: "c8d4600b-6334-4b1c-8b5c-63722a923f60", url: "http://localhost:8080")
+  Base::Client.new(access_token: '4dcfbd28-ae85-4370-9529-45cced846cba')
 
 def get_error_message(error)
   case error
