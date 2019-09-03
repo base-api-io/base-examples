@@ -2,7 +2,7 @@ version: 1.0
 shards:
   base:
     github: base-api-io/base-cr
-    commit: 0af7744ac55a3b0be1ae8e8fb610cd6e9b96ff0e
+    version: 1.3.0
 
   crest:
     github: mamantoha/crest
