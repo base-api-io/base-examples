@@ -1,0 +1,45 @@
+<div class="container mt-5">
+  <div class="mb-4 d-flex align-items-center">
+    <h1 class="mr-auto">
+      Submission
+    </h1>
+
+    <form method="POST" action="/forms/<%= form.id %>/submissions/<%= submission.id %>/delete">
+      <button class="btn btn-danger">
+        Delete
+      </button>
+    </form>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>ID</td>
+        <td>
+          <%= submission.id %>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Created At</td>
+        <td>
+          <%= submission.created_at %>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Fields</td>
+        <td>
+          <%= submission.fields.to_pretty_json %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

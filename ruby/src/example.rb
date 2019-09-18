@@ -5,7 +5,7 @@ require 'sinatra'
 require 'base'
 
 client =
-  Base::Client.new(access_token: '4dcfbd28-ae85-4370-9529-45cced846cba')
+  Base::Client.new(access_token: "d60808de-add4-4a35-8d47-77ea6fee28fd", url: "http://localhost:8080")
 
 def get_error_message(error)
   case error
@@ -342,4 +342,103 @@ post "/mailing-lists/:id/send" do
   redirect "/mailing-lists/#{id}"
 rescue
   redirect "/"
+end
+
+# FORMS
+# ==============================================================================
+
+get "/forms" do
+  page =
+    params[:page]&.to_i || 1
+
+  data =
+    client.forms.list(page: page)
+
+  erb :forms, locals: { data: data, page: page }
+end
+
+get "/forms/create" do
+  erb :form_create, locals: { error: nil }
+end
+
+post "/forms/create" do
+  form =
+    client.forms.create(
+      name: params[:name])
+
+  redirect "/forms/#{form.id}"
+rescue error
+  erb :form_create, locals: { error: error }
+end
+
+get "/forms/:id" do
+  form =
+    client.forms.get(params[:id])
+
+  erb :form, locals: { form: form }
+rescue
+  redirect "/"
+end
+
+post "/forms/:id/delete" do
+  client.forms.delete(params[:id])
+
+  redirect "/forms"
+rescue
+  redirect "/forms"
+end
+
+get "/forms/:id/submissions" do
+  form =
+    client.forms.get(params[:id])
+
+  page =
+    params[:page]&.to_i || 1
+
+  data =
+    client.forms.submissions(id: params[:id], page: page)
+
+  erb :form_submissions, locals: { data: data, page: page, form: form }
+end
+
+get "/forms/:id/submissions/:submission_id" do
+  form =
+    client.forms.get(params[:id])
+
+  submission =
+    client.forms.get_submission(params[:id], params[:submission_id])
+
+  erb :form_submission, locals: { form: form, submission: submission }
+end
+
+post "/forms/:id/submissions/:submission_id/delete" do
+  form_id =
+    params[:id]
+
+  client.forms.delete_submission(form_id, params[:submission_id])
+
+  redirect "/forms/#{form_id}"
+rescue
+  redirect "/forms/#{form_id}"
+end
+
+get "/forms/:id/submit" do
+  form =
+    client.forms.get(params[:id])
+
+  erb :form_submit, locals: { error: nil, form: form }
+end
+
+post "/forms/:id/submit" do
+  form =
+    client.forms.get(params[:id])
+
+  submission =
+    client.forms.submit(
+      id: form.id,
+      form: {"data" => params[:data]})
+
+  redirect "/forms/#{form.id}/submissions/#{submission.id}"
+rescue error
+  erb :form_submit, locals: { error: error }
 end

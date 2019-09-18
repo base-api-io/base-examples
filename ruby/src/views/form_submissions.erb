@@ -1,0 +1,48 @@
+<div class="container mt-5">
+  <div class="mb-4 d-flex align-items-center">
+    <h1 class="mr-auto">
+      Submissions
+    </h1>
+
+    <a class="btn btn-primary" href="/forms/<%= form.id %>/submit">
+      Create
+    </a>
+  </div>
+
+  <table class="table mb-4">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Created At</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% data.items.each do |submission| %>
+        <tr>
+          <td>
+            <a href="/forms/<%= form.id %>/submissions/<%= submission.id %>">
+              <%= submission.id %>
+            </a>
+          </td>
+
+          <td>
+            <%= submission.created_at %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <% if page > 1 %>
+    <a href="/forms/<%= form.id %>/submissions?page=<%= page - 1 %>" class="btn btn-primary mr-2">
+      Previous
+    </a>
+  <% end %>
+
+  <% if (data.metadata.count - (page * 10)) > 0 %>
+    <a href="/forms/<%= form.id %>/submissions?page=<%= page + 1 %>" class="btn btn-primary">
+      Next
+    </a>
+  <% end %>
+</div>
