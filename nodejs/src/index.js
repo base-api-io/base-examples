@@ -60,7 +60,7 @@ const getErrorMessage = (error) => {
 // CREATE A CLIENT
 // =============================================================================
 
-const client = new Client('4dcfbd28-ae85-4370-9529-45cced846cba');
+const client = new Client('d60808de-add4-4a35-8d47-77ea6fee28fd', 'http://localhost:8080');
 
 // REGISTER
 // =============================================================================
@@ -448,4 +448,95 @@ app.post('/mailing-lists/:id/send', async (req, res) => {
   }
 });
 
+// FORMS
+// =============================================================================
+
+app.get('/forms', async (req, res) => {
+  const page = req.query.page ? parseInt(req.query.page, 10) : 1;
+
+  const data = await client.forms.list(page);
+
+  res.render('forms', { data, page });
+});
+
+app.get('/forms/create', async (req, res) => {
+  res.render('form-create', { error: null });
+});
+
+app.post('/forms/create', async (req, res) => {
+  try {
+    const form = await client.forms.create(req.body.name);
+
+    res.redirect(`/forms/${form.id}`);
+  } catch (error) {
+    res.render('form-create', {
+      error: getErrorMessage(error),
+    });
+  }
+});
+
+app.get('/forms/:id', async (req, res) => {
+  try {
+    const form = await client.forms.get(req.params.id);
+
+    res.render('form', { form });
+  } catch (error) {
+    res.redirect('/forms');
+  }
+});
+
+app.post('/forms/:id/delete', async (req, res) => {
+  try {
+    await client.forms.delete(req.params.id);
+
+    res.redirect('/forms');
+  } catch (error) {
+    res.redirect('/forms');
+  }
+});
+
+app.get('/forms/:id/submit', async (req, res) => {
+  const form = await client.forms.get(req.params.id);
+
+  res.render('form-submit', { error: null, form: form });
+});
+
+app.post('/forms/:id/submit', async (req, res) => {
+  try {
+    const form = await client.forms.get(req.params.id);
+
+    const submission = await client.forms.submit(form.id, { data: req.body.data });
+
+    res.redirect(`/forms/${form.id}/submissions/${submission.id}`);
+  } catch (error) {
+    res.render('form-submit', {
+      error: getErrorMessage(error),
+    });
+  }
+});
+
+app.get('/forms/:id/submissions', async (req, res) => {
+  const form = await client.forms.get(req.params.id);
+
+  const page = req.query.page ? parseInt(req.query.page, 10) : 1;
+
+  const data = await client.forms.submissions(req.params.id, page);
+
+  res.render('form-submissions', { data, page , form});
+});
+
+app.get('/forms/:id/submissions/:submissionId', async (req, res) => {
+  const form = await client.forms.get(req.params.id);
+  const submission = await client.forms.getSubmission(req.params.id, req.params.submissionId);
+
+  res.render('form-submission', { submission, form});
+});
+
+app.post('/forms/:id/submissions/:submissionId/delete', async (req, res) => {
+  const form = await client.forms.get(req.params.id);
+
+  await client.forms.deleteSubmission(req.params.id, req.params.submissionId);
+
+  res.redirect(`/forms/${form.id}/submissions`)
+});
 app.listen(3000);

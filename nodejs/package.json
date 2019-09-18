@@ -8,7 +8,7 @@
     "lint": "yarn eslint src/**/*.js --fix"
   },
   "dependencies": {
-    "base-api-io": "^1.3.0",
+    "base-api-io": "file:../../base-node",
     "body-parser": "^1.19.0",
     "consolidate": "^0.15.1",
     "cookie-session": "^1.3.3",

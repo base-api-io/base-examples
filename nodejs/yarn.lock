@@ -100,10 +100,8 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
 
-base-api-io@^1.3.0:
+"base-api-io@file:../../base-node":
   version "1.3.0"
-  resolved "https://registry.yarnpkg.com/base-api-io/-/base-api-io-1.3.0.tgz#ae1746fe67a105b0e0d538c1a129c6fb780a3f81"
-  integrity sha512-Bt0kbaNn9PXOw23l9iH6Tf7MwCFO3ZzZjyx9KsdqUH/TCkxCoqGbo2qBu5mv7bn3yUc3d13XinsnrsmAkPjkGQ==
   dependencies:
     check-types "^9.0.1"
     needle "^2.4.0"

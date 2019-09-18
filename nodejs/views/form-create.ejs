@@ -1,0 +1,28 @@
+<% inherits('layout') %>
+
+<div class="container mt-5">
+  <h1>Create a Form</h1>
+
+  <% if (error) { %>
+    <div class="alert alert-danger">
+      <%= error %>
+    </div>
+  <% } %>
+
+  <form method="POST" action="/forms/create">
+    <div class="form-group">
+      <label for="name">
+        Name
+      </label>
+
+      <input
+        class="form-control"
+        type="text"
+        name="name"
+        id="name"
+      />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+  </form>
+</div>
