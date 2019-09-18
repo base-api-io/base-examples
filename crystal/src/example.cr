@@ -3,7 +3,7 @@ require "kemal"
 require "kemal-session"
 
 client =
-  Base::Client.new(access_token: "4dcfbd28-ae85-4370-9529-45cced846cba")
+  Base::Client.new(access_token: "d60808de-add4-4a35-8d47-77ea6fee28fd", url: "http://localhost:8080")
 
 Kemal::Session.config do |config|
   config.cookie_name = "session_id"
@@ -448,6 +448,114 @@ post "/mailing-lists/:id/send" do |env|
   env.redirect "/mailing-lists/#{id}"
 rescue
   env.redirect "/"
+end
+
+# FORMS
+# ==============================================================================
+
+get "/forms" do |env|
+  page =
+    env.params.query["page"]?.try(&.to_i32) || 1
+
+  data =
+    client.forms.list(page: page)
+
+  render "src/views/forms.ecr", "src/views/layout.ecr"
+end
+
+get "/forms/:id" do |env|
+  form =
+    client.forms.get(env.params.url["id"]?.to_s)
+
+  render "src/views/form.ecr", "src/views/layout.ecr"
+rescue
+  env.redirect "/"
+end
+
+post "/forms/:id/delete" do |env|
+  client.forms.delete(env.params.url["id"]?.to_s)
+
+  env.redirect "/forms"
+rescue
+  env.redirect "/forms"
+end
+
+get "/forms/create" do |env|
+  error = nil
+
+  render "src/views/form-create.ecr", "src/views/layout.ecr"
+end
+
+post "/forms/create" do |env|
+  form =
+    client.forms.create(
+      name: env.params.body["name"].as(String))
+
+  env.redirect "/forms/#{form.id}"
+rescue error
+  render "src/views/form-create.ecr", "src/views/layout.ecr"
+end
+
+get "/forms/:id/submissions" do |env|
+  page =
+    env.params.query["page"]?.try(&.to_i32) || 1
+
+  form =
+    client.forms.get(env.params.url["id"]?.to_s)
+
+  data =
+    client.forms.submissions(form.id, page: page)
+
+  render "src/views/form-submissions.ecr", "src/views/layout.ecr"
+end
+
+get "/forms/:id/submissions/:submission_id" do |env|
+  page =
+    env.params.query["page"]?.try(&.to_i32) || 1
+
+  form =
+    client.forms.get(env.params.url["id"]?.to_s)
+
+  submission =
+    client.forms.get_submission(env.params.url["id"]?.to_s, env.params.url["submission_id"]?.to_s)
+
+  render "src/views/form-submission.ecr", "src/views/layout.ecr"
+rescue error : Base::InvalidRequest
+  puts error.data
+end
+
+post "/forms/:id/submissions/:submission_id/delete" do |env|
+  form_id =
+    env.params.url["id"]?.to_s
+
+  client.forms.delete_submission(form_id, env.params.url["submission_id"]?.to_s)
+
+  env.redirect "/forms/#{form_id}"
+rescue
+  env.redirect "/forms/#{form_id}"
+end
+
+get "/forms/:id/submit" do |env|
+  error = nil
+
+  form =
+    client.forms.get(env.params.url["id"]?.to_s)
+
+  render "src/views/form-submit.ecr", "src/views/layout.ecr"
+end
+
+post "/forms/:id/submit" do |env|
+  form =
+    client.forms.get(env.params.url["id"]?.to_s)
+
+  submission =
+    client.forms.submit(
+      id: form.id,
+      form: {"data" => env.params.body["data"].as(String)})
+
+  env.redirect "/forms/#{form.id}/submissions/#{submission.id}"
+rescue error
+  render "src/views/form-submit.ecr", "src/views/layout.ecr"
 end
 
 Kemal.run

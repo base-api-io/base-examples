@@ -1,0 +1,26 @@
+<div class="container mt-5">
+  <h1>Submit a Form</h1>
+
+  <% if error %>
+    <div class="alert alert-danger">
+      <%= get_error_message(error) %>
+    </div>
+  <% end %>
+
+  <form method="POST" action="/forms/<%= form.try(&.id) %>/submit" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="data">
+        Data
+      </label>
+
+      <input
+        class="form-control"
+        type="text"
+        name="data"
+        id="data"
+      />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+  </form>
+</div>

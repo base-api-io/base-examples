@@ -1,0 +1,42 @@
+<div class="container mt-5">
+  <div class="mb-4 d-flex align-items-center">
+    <h1 class="mr-auto">
+      Form Details
+    </h1>
+
+    <a class="btn btn-primary mr-2" href="/forms/<%= form.id %>/submissions">
+      Submissions
+    </a>
+
+    <form class="mb-0" method="POST" action="/forms/<%= form.id %>/delete">
+      <button class="btn btn-danger">
+        Delete
+      </button>
+    </form>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>ID</td>
+        <td>
+          <%= form.id %>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Created At</td>
+        <td>
+          <%= form.created_at %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
