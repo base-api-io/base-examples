@@ -3,7 +3,7 @@ require "kemal"
 require "kemal-session"
 
 client =
-  Base::Client.new(access_token: "d60808de-add4-4a35-8d47-77ea6fee28fd", url: "http://localhost:8080")
+  Base::Client.new(access_token: "4dcfbd28-ae85-4370-9529-45cced846cba")
 
 Kemal::Session.config do |config|
   config.cookie_name = "session_id"

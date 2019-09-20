@@ -15,4 +15,4 @@ dependencies:
     github: kemalcr/kemal-session
   base:
     github: base-api-io/base-cr
-    branch: master
+    version: 1.4.0
