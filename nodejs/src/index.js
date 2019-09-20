@@ -60,7 +60,7 @@ const getErrorMessage = (error) => {
 // CREATE A CLIENT
 // =============================================================================
 
-const client = new Client('d60808de-add4-4a35-8d47-77ea6fee28fd', 'http://localhost:8080');
+const client = new Client('4dcfbd28-ae85-4370-9529-45cced846cba');
 
 // REGISTER
 // =============================================================================
