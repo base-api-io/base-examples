@@ -37,7 +37,7 @@
       <tr>
         <td>Fields</td>
         <td>
-          <%= submission.fields.to_pretty_json %>
+          <%= JSON.pretty_generate(submission.fields.to_h) %>
         </td>
       </tr>
     </tbody>
