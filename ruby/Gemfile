@@ -2,6 +2,6 @@
 
 source 'https://rubygems.org'
 
-gem 'base-api-io', '~> 1.4.0'
+gem 'base-api-io', '~> 1.5.0'
 gem 'sinatra', '~> 2.0'
 gem 'rubocop', '~> 0.74.0'

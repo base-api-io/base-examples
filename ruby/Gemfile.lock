@@ -2,7 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.0)
-    base-api-io (1.4.0)
+    base-api-io (1.5.0)
       faraday (~> 0.15.4)
       mimetype-fu (~> 0.1.2)
     faraday (0.15.4)
@@ -38,7 +38,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  base-api-io (~> 1.4.0)
+  base-api-io (~> 1.5.0)
   rubocop (~> 0.74.0)
   sinatra (~> 2.0)
 

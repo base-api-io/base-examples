@@ -163,6 +163,16 @@ end
 # SEND EMAIL
 # ==============================================================================
 
+get '/emails' do
+  page =
+    params[:page]&.to_i || 1
+
+  data =
+    client.emails.list(page: page)
+
+  erb :emails, locals: { data: data, page: page }
+end
+
 get '/send-email' do
   erb :send_email, locals: { error: nil, success: nil }
 end
