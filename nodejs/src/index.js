@@ -232,6 +232,14 @@ app.post('/users/:id/delete', async (req, res) => {
 // SEND EMAIL
 // =============================================================================
 
+app.get('/emails', async (req, res) => {
+  const page = req.query.page ? parseInt(req.query.page, 10) : 1;
+
+  const data = await client.emails.list(page);
+
+  res.render('emails', { data, page });
+});
+
 app.get('/send-email', async (req, res) => {
   res.render('send-email', {
     success: null,
