@@ -225,6 +225,16 @@ end
 # SEND EMAIL
 # ==============================================================================
 
+get "/emails" do |env|
+  page =
+    env.params.query["page"]?.try(&.to_i32) || 1
+
+  data =
+    client.emails.list(page: page)
+
+  render "src/views/emails.ecr", "src/views/layout.ecr"
+end
+
 get "/send-email" do |env|
   success = false
   error = nil

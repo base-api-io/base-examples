@@ -4,7 +4,7 @@ version: 0.1.0
 authors:
   - Gusztav Szikszai <guszti5@hotmail.com>
 
-crystal: 0.30.1
+crystal: 0.31.0
 
 license: MIT
 
@@ -15,4 +15,4 @@ dependencies:
     github: kemalcr/kemal-session
   base:
     github: base-api-io/base-cr
-    version: 1.4.0
+    version: 1.5.0
