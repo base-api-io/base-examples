@@ -4,7 +4,7 @@ This is an example of using the Crytal client of [Base API](https://www.base-api
 
 ## Requirements
 
-- [Crystal 0.30.1](https://crystal-lang.org)
+- [Crystal 0.31.0](https://crystal-lang.org)
 
 ## Installation
 
