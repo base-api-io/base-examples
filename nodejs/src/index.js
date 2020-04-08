@@ -262,6 +262,7 @@ app.post('/send-email', async (req, res) => {
       req.body.subject,
       req.body.from,
       req.body.to,
+      null,
       req.body.html,
       req.body.text,
     );
