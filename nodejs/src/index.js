@@ -1,31 +1,17 @@
+const multipart = require('connect-multiparty');
 const bodyParser = require('body-parser');
 const session = require('cookie-session');
 const engines = require('consolidate');
 const express = require('express');
-const multer = require('multer');
 const fs = require('fs');
 
 const { Client, InvalidRequest, Unauthorized } = require('base-api-io');
 
-const storage = multer.diskStorage({
-  destination: 'uploads/',
-  filename(req, file, callback) {
-    callback(null, file.originalname);
-  },
-});
-
-const upload = multer({
-  storage,
-  limits: {
-    fieldNameSize: 100,
-    fieldSize: 1000000,
-    fileSize: 1000000,
-  },
-});
 
 // APP SETUP
 // =============================================================================
 
+const upload = multipart();
 const app = express();
 
 app.engine('ejs', engines.qejs);
@@ -290,17 +276,18 @@ app.get('/upload-file', async (req, res) => {
   res.render('upload-file', { error: null });
 });
 
-app.post('/upload-file', upload.single('file'), async (req, res) => {
+app.post('/upload-file', upload, async (req, res) => {
   try {
     const file = await client.files.create({
-      content_type: req.file.mimetype,
-      file: req.file.path,
+      content_type: req.files.file.type,
+      file: req.files.file.path,
     });
 
-    fs.unlink(req.file.path);
+    fs.unlink(req.files.file.path, () => {});
 
     res.redirect(`/files/${file.id}`);
   } catch (error) {
+    console.log(error)
     res.render('upload-file', {
       error: getErrorMessage(error),
     });
@@ -353,14 +340,14 @@ app.get('/upload-image', async (req, res) => {
   res.render('upload-image', { error: null });
 });
 
-app.post('/upload-image', upload.single('image'), async (req, res) => {
+app.post('/upload-image', upload, async (req, res) => {
   try {
     const image = await client.images.create({
-      content_type: req.file.mimetype,
-      file: req.file.path,
+      content_type: req.files.image.type,
+      file: req.files.image.path,
     });
 
-    fs.unlink(req.file.path);
+    fs.unlink(req.files.image.path, () => {});
 
     res.redirect(`/images/${image.id}`);
   } catch (error) {
